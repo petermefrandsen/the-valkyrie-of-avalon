@@ -1,6 +1,24 @@
 'use client';
 
-import { ShieldCheck, Heart, Instagram } from 'lucide-react';
+import { ShieldCheck, Heart } from 'lucide-react';
+
+function InstagramIcon({ className = "w-4 h-4" }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
 
 export default function Footer() {
   return (
@@ -29,7 +47,7 @@ export default function Footer() {
             className="flex items-center space-x-1.5 hover:text-amber-600 dark:hover:text-amber-400 transition-colors font-semibold"
             aria-label="Follow on Instagram"
           >
-            <Instagram className="w-4 h-4 text-pink-600 dark:text-pink-400" />
+            <InstagramIcon className="w-4 h-4 text-pink-600 dark:text-pink-400" />
             <span>@the_valkyrie_of_avalon</span>
           </a>
 
