@@ -12,6 +12,21 @@ export async function POST(request) {
 
     const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
+    // Determine currency from the first cart item (e.g. 'dkk', 'usd', 'eur')
+    const cartCurrency = (items[0]?.currency || 'usd').toLowerCase();
+
+    // Calculate shipping amounts matching the line items currency
+    let standardShippingAmount = 800; // $8.00 USD
+    let expressShippingAmount = 1800; // $18.00 USD
+
+    if (cartCurrency === 'dkk') {
+      standardShippingAmount = 4900; // 49.00 DKK
+      expressShippingAmount = 12000; // 120.00 DKK
+    } else if (cartCurrency === 'eur') {
+      standardShippingAmount = 700; // 7.00 EUR
+      expressShippingAmount = 1600; // 16.00 EUR
+    }
+
     // If Stripe Secret Key is available, create real Stripe Checkout Session
     if (stripe && process.env.STRIPE_SECRET_KEY) {
       const lineItems = items.map((item) => {
@@ -26,7 +41,7 @@ export async function POST(request) {
         // Otherwise construct inline price data for dynamic/test items
         return {
           price_data: {
-            currency: item.currency || 'usd',
+            currency: cartCurrency,
             product_data: {
               name: item.name,
               description: item.description || `Handcrafted craft item`,
@@ -52,8 +67,8 @@ export async function POST(request) {
             shipping_rate_data: {
               type: 'fixed_amount',
               fixed_amount: {
-                amount: 800, // $8.00 Standard Shipping
-                currency: 'usd',
+                amount: standardShippingAmount,
+                currency: cartCurrency,
               },
               display_name: 'Standard Artisan Shipping (Tracked Parcel)',
               delivery_estimate: {
@@ -66,8 +81,8 @@ export async function POST(request) {
             shipping_rate_data: {
               type: 'fixed_amount',
               fixed_amount: {
-                amount: 1800, // $18.00 Express International
-                currency: 'usd',
+                amount: expressShippingAmount,
+                currency: cartCurrency,
               },
               display_name: 'Express Priority Courier',
               delivery_estimate: {
