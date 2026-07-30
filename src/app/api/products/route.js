@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { MOCK_PRODUCTS } from '@/lib/mockData';
 
+// Custom Stock Override Map for products where Stripe metadata has not been added yet
+const STOCK_OVERRIDE_MAP = {
+  'test thing': 2,
+  'rhysand earrings': 5,
+  'prod_uyryjzycdzuxr': 2,
+  'prod_uyrtbkafnf1bdx': 5,
+};
+
 export async function GET() {
   try {
     // If Stripe secret key is configured, fetch live products & prices from Stripe
@@ -21,7 +29,12 @@ export async function GET() {
         const meta = prod.metadata || {};
         const rawStock = meta.stock || meta.quantity || meta.inventory || meta.count || meta.available || meta.in_stock;
 
-        let stock = 5; // default fallback if metadata is not defined in Stripe Dashboard
+        // Lookup fallback override by product name or ID if metadata is empty
+        const productNameLower = (prod.name || '').toLowerCase().trim();
+        const productIdLower = (prod.id || '').toLowerCase().trim();
+        const mapOverride = STOCK_OVERRIDE_MAP[productNameLower] ?? STOCK_OVERRIDE_MAP[productIdLower];
+
+        let stock = mapOverride !== undefined ? mapOverride : 5;
 
         if (rawStock !== undefined && rawStock !== null && rawStock !== '') {
           stock = parseInt(rawStock, 10);
@@ -33,14 +46,14 @@ export async function GET() {
           }
         }
 
-        const category = meta.category || 'Crafts';
+        const category = meta.category || (productNameLower.includes('earring') || productNameLower.includes('jewelry') ? 'Forged Jewelry' : 'Crafts');
         const materials = meta.materials || 'Artisan materials';
         const dimensions = meta.dimensions || 'Standard size';
 
         return {
           id: prod.id,
           name: prod.name,
-          description: prod.description || 'Handmade artisan craft.',
+          description: prod.description || 'Handmade artisan craft item.',
           price: priceInCents,
           currency: currency,
           priceId: priceId,
