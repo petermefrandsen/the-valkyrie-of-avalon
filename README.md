@@ -15,7 +15,14 @@ A custom e-commerce webshop built for **The Valkyrie of Avalon** independent cra
 
 ---
 
-## 🛠️ Getting Started
+## 🛠️ Environments & Deployments
+
+- **Production (`main` branch)**: Connected to Stripe Live Production Keys.
+- **Staging (`staging` branch)**: Connected to Stripe Test Keys for safe preview testing.
+
+---
+
+## 🚀 Getting Started
 
 ### 1. Run Development Server
 ```bash
@@ -34,11 +41,3 @@ Open `http://localhost:3000` in your browser.
    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
    STRIPE_WEBHOOK_SECRET=whsec_...
    ```
-
----
-
-## 🚀 Deployment (Vercel / Netlify)
-
-1. Push code to GitHub and connect repository to [Vercel](https://vercel.com).
-2. Add environment variables (`STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`) in Vercel settings.
-3. In Stripe Dashboard -> Webhooks, add endpoint `https://yourdomain.com/api/webhook` listening for `checkout.session.completed`.
