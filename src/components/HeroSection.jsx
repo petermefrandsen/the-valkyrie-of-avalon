@@ -1,0 +1,45 @@
+'use client';
+
+import { Sparkles } from 'lucide-react';
+
+export default function HeroSection() {
+  return (
+    <section className="relative overflow-hidden pt-12 pb-16 lg:py-20 border-b border-[var(--border-color)] transition-colors duration-200">
+      {/* Background Glow Accent */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-amber-500/10 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center">
+        
+        {/* Centered Emblem Logo */}
+        <div className="mx-auto mb-6 flex items-center justify-center">
+          <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full p-1 bg-gradient-to-tr from-amber-700 via-amber-500 to-amber-300 shadow-xl hover:scale-105 transition-transform duration-500">
+            <img
+              src="/images/logo.png"
+              alt="The Valkyrie of Avalon Emblem"
+              className="w-full h-full object-cover rounded-full bg-slate-900"
+            />
+          </div>
+        </div>
+
+        {/* Small Batch Badge */}
+        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[var(--text-heading)] text-[var(--bg-main)] border border-[var(--border-color)] text-xs font-extrabold tracking-widest uppercase mb-6 shadow-sm">
+          <Sparkles className="w-4 h-4 text-amber-400" />
+          <span>Small Batch & Single-Edition Crafts</span>
+        </div>
+
+        {/* Solid Pitch Black Headline in Light Mode */}
+        <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[var(--text-heading)] leading-tight max-w-4xl mx-auto">
+          Forged in Avalon, <br className="hidden sm:inline" />
+          <span className="text-[var(--accent-gold)] font-extrabold">
+            Crafted by Hand for Eternity
+          </span>
+        </h2>
+
+        {/* Story Subtitle */}
+        <p className="mt-5 text-base sm:text-lg text-[var(--text-body)] font-medium max-w-2xl mx-auto leading-relaxed">
+          Welcome to my independent workshop atelier. Every leather bound journal, carved oak bowl, and forged silver talisman is produced in small numbered batches (1 to 10 items) using traditional tools and natural materials.
+        </p>
+      </div>
+    </section>
+  );
+}
