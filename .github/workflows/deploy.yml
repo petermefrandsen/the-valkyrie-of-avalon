@@ -4,15 +4,17 @@ on:
   push:
     branches:
       - main
+      - staging
   pull_request:
     branches:
       - main
+      - staging
     types: [opened, synchronize, reopened, closed]
 
 jobs:
-  # Job 1: Staging Preview Environment for Active Pull Requests
-  staging-preview:
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+  # Job 1: Staging Environment (Triggers on 'staging' branch push or PRs)
+  staging-deploy:
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/staging') || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -33,13 +35,13 @@ jobs:
       - name: Pull Vercel Preview Environment
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Build Staging Preview Artifacts
+      - name: Build Staging Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy Staging Preview to Vercel
+      - name: Deploy Staging to Vercel
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
 
-  # Job 2: Production Deployment for Merges to Main
+  # Job 2: Production Deployment (Triggers ONLY on 'main' branch push)
   production-deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
