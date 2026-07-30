@@ -14,14 +14,28 @@ export async function GET() {
       const products = productsResponse.data.map((prod) => {
         const defaultPrice = prod.default_price;
         const priceInCents = defaultPrice ? defaultPrice.unit_amount : 0;
-        const currency = defaultPrice ? defaultPrice.currency : 'usd';
+        const currency = defaultPrice ? defaultPrice.currency : 'dkk';
         const priceId = defaultPrice ? defaultPrice.id : null;
 
-        // Parse stock from metadata or default to 5
-        const stock = prod.metadata?.stock ? parseInt(prod.metadata.stock, 10) : 5;
-        const category = prod.metadata?.category || 'Crafts';
-        const materials = prod.metadata?.materials || 'Artisan materials';
-        const dimensions = prod.metadata?.dimensions || 'Standard size';
+        // Extract stock quantity from product metadata (check keys: stock, quantity, inventory, count, available)
+        const meta = prod.metadata || {};
+        const rawStock = meta.stock || meta.quantity || meta.inventory || meta.count || meta.available || meta.in_stock;
+
+        let stock = 5; // default fallback if metadata is not defined in Stripe Dashboard
+
+        if (rawStock !== undefined && rawStock !== null && rawStock !== '') {
+          stock = parseInt(rawStock, 10);
+        } else {
+          // Check description for stock hints (e.g., "Stock: 2", "2 items available")
+          const descMatch = (prod.description || '').match(/(?:stock|available|quantity|inventory):\s*(\d+)/i);
+          if (descMatch) {
+            stock = parseInt(descMatch[1], 10);
+          }
+        }
+
+        const category = meta.category || 'Crafts';
+        const materials = meta.materials || 'Artisan materials';
+        const dimensions = meta.dimensions || 'Standard size';
 
         return {
           id: prod.id,
@@ -31,9 +45,9 @@ export async function GET() {
           currency: currency,
           priceId: priceId,
           category: category,
-          images: prod.images.length > 0 ? prod.images : ['https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80'],
-          stock: stock,
-          batchSize: `Batch of ${stock} items`,
+          images: prod.images && prod.images.length > 0 ? prod.images : ['https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80'],
+          stock: isNaN(stock) ? 5 : stock,
+          batchSize: `Batch of ${isNaN(stock) ? 5 : stock} items`,
           materials: materials,
           dimensions: dimensions,
         };
