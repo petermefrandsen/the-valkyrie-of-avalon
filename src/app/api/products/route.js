@@ -2,14 +2,6 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { MOCK_PRODUCTS } from '@/lib/mockData';
 
-// Custom Stock Override Map for products where Stripe metadata has not been added yet
-const STOCK_OVERRIDE_MAP = {
-  'test thing': 2,
-  'rhysand earrings': 5,
-  'prod_uyryjzycdzuxr': 2,
-  'prod_uyrtbkafnf1bdx': 5,
-};
-
 export async function GET() {
   try {
     // If Stripe secret key is configured, fetch live products & prices from Stripe
@@ -27,14 +19,9 @@ export async function GET() {
 
         // Extract stock quantity from product metadata (check keys: stock, quantity, inventory, count, available)
         const meta = prod.metadata || {};
-        const rawStock = meta.stock || meta.quantity || meta.inventory || meta.count || meta.available || meta.in_stock;
+        const rawStock = meta.stock ?? meta.quantity ?? meta.inventory ?? meta.count ?? meta.available ?? meta.in_stock;
 
-        // Lookup fallback override by product name or ID if metadata is empty
-        const productNameLower = (prod.name || '').toLowerCase().trim();
-        const productIdLower = (prod.id || '').toLowerCase().trim();
-        const mapOverride = STOCK_OVERRIDE_MAP[productNameLower] ?? STOCK_OVERRIDE_MAP[productIdLower];
-
-        let stock = mapOverride !== undefined ? mapOverride : 5;
+        let stock = 0; // Default to 0 (Out of Stock / Sold Out) if no stock metadata is provided in Stripe
 
         if (rawStock !== undefined && rawStock !== null && rawStock !== '') {
           stock = parseInt(rawStock, 10);
@@ -46,7 +33,7 @@ export async function GET() {
           }
         }
 
-        const category = meta.category || (productNameLower.includes('earring') || productNameLower.includes('jewelry') ? 'Forged Jewelry' : 'Crafts');
+        const category = meta.category || 'Crafts';
         const materials = meta.materials || 'Artisan materials';
         const dimensions = meta.dimensions || 'Standard size';
 
@@ -59,8 +46,8 @@ export async function GET() {
           priceId: priceId,
           category: category,
           images: prod.images && prod.images.length > 0 ? prod.images : ['https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80'],
-          stock: isNaN(stock) ? 5 : stock,
-          batchSize: `Batch of ${isNaN(stock) ? 5 : stock} items`,
+          stock: isNaN(stock) ? 0 : Math.max(0, stock),
+          batchSize: stock > 0 ? `Batch of ${stock} items` : 'Sold Out',
           materials: materials,
           dimensions: dimensions,
         };
