@@ -7,11 +7,12 @@ on:
   pull_request:
     branches:
       - main
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
-  # Job 1: Staging Preview Environment for Pull Requests
+  # Job 1: Staging Preview Environment for Active Pull Requests
   staging-preview:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -66,3 +67,17 @@ jobs:
 
       - name: Deploy Production to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+  # Job 3: Automated Staging Preview Cleanup on PR Close
+  pr-closed-cleanup:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Archive / Clean Preview Deployment
+        run: vercel remove the-valkyrie-of-avalon --yes --token=${{ secrets.VERCEL_TOKEN }} || true
