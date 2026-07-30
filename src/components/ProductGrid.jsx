@@ -38,18 +38,18 @@ export default function ProductGrid() {
   });
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       
       {/* Category Filter & Search Bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8 sm:mb-10">
         
-        {/* Category Pills */}
-        <div className="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
+        {/* Category Pills - Touch Scrollable on Mobile */}
+        <div className="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none touch-pan-x">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border cursor-pointer ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-[var(--accent-gold)] text-white border-[var(--accent-gold)] shadow-md'
                   : 'bg-[var(--bg-card)] text-[var(--text-heading)] border-[var(--border-color)] hover:border-[var(--accent-gold)]'
@@ -68,14 +68,14 @@ export default function ProductGrid() {
             placeholder="Search crafts or runes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] focus:border-[var(--accent-gold)] rounded-xl pl-10 pr-4 py-2 text-xs text-[var(--text-heading)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-gold)] transition-all shadow-xs font-medium"
+            className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] focus:border-[var(--accent-gold)] rounded-xl pl-10 pr-4 py-2.5 sm:py-2 text-xs text-[var(--text-heading)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-gold)] transition-all shadow-xs font-medium"
           />
         </div>
       </div>
 
       {/* Loading Skeletons */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {[1, 2, 3, 4, 5, 6].map((n) => (
             <div key={n} className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] p-5 animate-pulse h-96 flex flex-col justify-between">
               <div className="bg-[var(--bg-image-placeholder)] rounded-xl h-48 w-full mb-4" />
@@ -88,7 +88,7 @@ export default function ProductGrid() {
           ))}
         </div>
       ) : filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
@@ -98,7 +98,7 @@ export default function ProductGrid() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl shadow-xs">
+        <div className="text-center py-12 sm:py-16 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl shadow-xs px-4">
           <Sparkles className="w-10 h-10 text-[var(--accent-gold)] opacity-60 mx-auto mb-3" />
           <h3 className="text-lg font-serif text-[var(--text-heading)] font-bold">No crafts match your filter</h3>
           <p className="text-xs text-[var(--text-muted)] mt-1">Try clearing your search query or selecting a different category.</p>

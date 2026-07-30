@@ -4,7 +4,7 @@ import { useCart } from '@/context/CartContext';
 import { useTheme } from '@/context/ThemeContext';
 import { ShoppingBag, ShieldCheck, Sun, Moon } from 'lucide-react';
 
-function InstagramIcon({ className = "w-5 h-5" }) {
+function InstagramIcon({ className = "w-4 h-4" }) {
   return (
     <svg
       className={className}
@@ -28,14 +28,14 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[var(--header-bg)] border-b border-[var(--border-color)] transition-colors duration-300 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         
         {/* Brand Logo & Title */}
         <div
-          className="flex items-center space-x-3 cursor-pointer group"
+          className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group shrink-0"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
-          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-slate-900 dark:border-amber-400/60 shadow-md group-hover:scale-105 transition-transform duration-300 bg-[var(--bg-card)]">
+          <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-slate-900 dark:border-amber-400/60 shadow-md group-hover:scale-105 transition-transform duration-300 bg-[var(--bg-card)] shrink-0">
             <img
               src="/images/logo.png"
               alt="The Valkyrie of Avalon Logo"
@@ -43,26 +43,26 @@ export default function Header() {
             />
           </div>
           <div>
-            <h1 className="font-serif text-xl sm:text-2xl font-black tracking-wider text-[var(--text-heading)] uppercase">
+            <h1 className="font-serif text-sm sm:text-xl lg:text-2xl font-black tracking-wider text-[var(--text-heading)] uppercase">
               The Valkyrie <span className="text-[var(--accent-gold)] font-extrabold">of Avalon</span>
             </h1>
-            <p className="text-[10px] tracking-widest text-[var(--text-body)] font-bold uppercase">Handcrafted Artisan Goods</p>
+            <p className="text-[9px] sm:text-[10px] tracking-widest text-[var(--text-body)] font-bold uppercase hidden sm:block">Handcrafted Artisan Goods</p>
           </div>
         </div>
 
         {/* Right Section: Instagram Link, Security Badge, Theme Toggle & Basket Button */}
-        <div className="flex items-center space-x-3 sm:space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-4">
           
           {/* Instagram Social Link */}
           <a
             href="https://www.instagram.com/the_valkyrie_of_avalon/"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-pink-600 dark:text-pink-400 hover:scale-105 transition-all shadow-xs flex items-center justify-center cursor-pointer"
+            className="p-2 sm:p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-pink-600 dark:text-pink-400 hover:scale-105 transition-all shadow-xs flex items-center justify-center cursor-pointer"
             title="Follow on Instagram (@the_valkyrie_of_avalon)"
             aria-label="Instagram Profile"
           >
-            <InstagramIcon className="w-5 h-5" />
+            <InstagramIcon className="w-4 h-4 sm:w-5 sm:h-5" />
           </a>
 
           {/* Security Badge */}
@@ -75,14 +75,14 @@ export default function Header() {
           {mounted && (
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl bg-[var(--toggle-bg)] border border-[var(--toggle-border)] text-[var(--toggle-text)] hover:opacity-90 transition-all shadow-xs cursor-pointer flex items-center justify-center"
+              className="p-2 sm:p-2.5 rounded-xl bg-[var(--toggle-bg)] border border-[var(--toggle-border)] text-[var(--toggle-text)] hover:opacity-90 transition-all shadow-xs cursor-pointer flex items-center justify-center"
               title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? (
-                <Sun className="w-5 h-5 text-amber-400 hover:rotate-45 transition-transform" />
+                <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 hover:rotate-45 transition-transform" />
               ) : (
-                <Moon className="w-5 h-5 text-slate-800 hover:-rotate-12 transition-transform" />
+                <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-800 hover:-rotate-12 transition-transform" />
               )}
             </button>
           )}
@@ -90,13 +90,13 @@ export default function Header() {
           {/* High Contrast Basket Button */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="relative group flex items-center space-x-2 bg-[var(--accent-gold)] hover:opacity-90 text-white font-black px-4 py-2.5 rounded-xl transition-all duration-200 shadow-md cursor-pointer active:scale-95"
+            className="relative group flex items-center space-x-1.5 sm:space-x-2 bg-[var(--accent-gold)] hover:opacity-90 text-white font-black px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all duration-200 shadow-md cursor-pointer active:scale-95"
             aria-label="View Shopping Basket"
           >
-            <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform text-white" />
-            <span className="text-sm font-black hidden sm:inline text-white">Basket</span>
+            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform text-white shrink-0" />
+            <span className="text-xs sm:text-sm font-black text-white hidden sm:inline">Basket</span>
             {totalItems > 0 && (
-              <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-black text-slate-950 bg-white rounded-full animate-pulse shadow-md">
+              <span className="inline-flex items-center justify-center w-5 h-5 text-[11px] sm:text-xs font-black text-slate-950 bg-white rounded-full animate-pulse shadow-md">
                 {totalItems}
               </span>
             )}
