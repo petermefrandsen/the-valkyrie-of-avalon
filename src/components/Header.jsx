@@ -2,14 +2,14 @@
 
 import { useCart } from '@/context/CartContext';
 import { useTheme } from '@/context/ThemeContext';
-import { ShoppingBag, ShieldCheck, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, ShieldCheck, Sun, Moon, Instagram } from 'lucide-react';
 
 export default function Header() {
   const { totalItems, setIsCartOpen } = useCart();
   const { theme, toggleTheme, mounted } = useTheme();
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[var(--header-bg)] border-b border-[var(--border-color)] transition-colors duration-200 shadow-xs">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[var(--header-bg)] border-b border-[var(--border-color)] transition-colors duration-300 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         {/* Brand Logo & Title */}
@@ -17,7 +17,7 @@ export default function Header() {
           className="flex items-center space-x-3 cursor-pointer group"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
-          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--border-color)] shadow-md group-hover:scale-105 transition-transform duration-300 bg-[var(--bg-card)]">
+          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-slate-900 dark:border-amber-400/60 shadow-md group-hover:scale-105 transition-transform duration-300 bg-[var(--bg-card)]">
             <img
               src="/images/logo.png"
               alt="The Valkyrie of Avalon Logo"
@@ -32,16 +32,28 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Right Section: Security Badge, Theme Toggle & Basket Button */}
-        <div className="flex items-center space-x-3 sm:space-x-5">
+        {/* Right Section: Instagram Link, Security Badge, Theme Toggle & Basket Button */}
+        <div className="flex items-center space-x-3 sm:space-x-4">
           
+          {/* Instagram Social Link */}
+          <a
+            href="https://www.instagram.com/the_valkyrie_of_avalon/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-pink-600 dark:text-pink-400 hover:scale-105 transition-all shadow-xs flex items-center justify-center cursor-pointer"
+            title="Follow on Instagram (@the_valkyrie_of_avalon)"
+            aria-label="Instagram Profile"
+          >
+            <Instagram className="w-5 h-5" />
+          </a>
+
           {/* Security Badge */}
-          <div className="hidden md:flex items-center space-x-2 text-xs font-bold text-[var(--text-body)] bg-[var(--bg-card)] border border-[var(--border-color)] px-3 py-1.5 rounded-full shadow-xs">
+          <div className="hidden lg:flex items-center space-x-2 text-xs font-bold text-[var(--text-body)] bg-[var(--bg-card)] border border-[var(--border-color)] px-3 py-1.5 rounded-full shadow-xs">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
             <span>Stripe Encrypted</span>
           </div>
 
-          {/* Theme Toggle Button - Pure White background in Light Mode */}
+          {/* Theme Toggle Button */}
           {mounted && (
             <button
               onClick={toggleTheme}

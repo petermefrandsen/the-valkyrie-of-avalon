@@ -1,6 +1,6 @@
 'use client';
 
-import { ShieldCheck, Heart } from 'lucide-react';
+import { ShieldCheck, Heart, Instagram } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
         
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden border border-teal-500/40 shrink-0">
+          <div className="w-10 h-10 rounded-full overflow-hidden border border-amber-500/40 shrink-0">
             <img
               src="/images/logo.png"
               alt="The Valkyrie of Avalon Emblem"
@@ -21,14 +21,26 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-6 text-[var(--text-muted)]">
-          <div className="flex items-center space-x-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Stripe Encrypted Payments</span>
+        <div className="flex items-center space-x-6 text-[var(--text-body)]">
+          <a
+            href="https://www.instagram.com/the_valkyrie_of_avalon/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-1.5 hover:text-amber-600 dark:hover:text-amber-400 transition-colors font-semibold"
+            aria-label="Follow on Instagram"
+          >
+            <Instagram className="w-4 h-4 text-pink-600 dark:text-pink-400" />
+            <span>@the_valkyrie_of_avalon</span>
+          </a>
+
+          <div className="flex items-center space-x-1.5 text-[var(--text-muted)]">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span>Stripe Encrypted</span>
           </div>
-          <div className="flex items-center space-x-1.5">
+
+          <div className="flex items-center space-x-1.5 text-[var(--text-muted)]">
             <Heart className="w-4 h-4 text-rose-500" />
-            <span>Made with passion</span>
+            <span>Handmade</span>
           </div>
         </div>
 
