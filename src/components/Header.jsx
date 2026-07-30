@@ -28,11 +28,11 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[var(--header-bg)] border-b border-[var(--border-color)] transition-colors duration-300 shadow-xs">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4">
         
-        {/* Brand Logo & Title */}
+        {/* Brand Logo & Title - Word wraps cleanly without ellipsis */}
         <div
-          className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group shrink-0"
+          className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group flex-1 min-w-0"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-slate-900 dark:border-amber-400/60 shadow-md group-hover:scale-105 transition-transform duration-300 bg-[var(--bg-card)] shrink-0">
@@ -42,23 +42,23 @@ export default function Header() {
               className="w-full h-full object-cover"
             />
           </div>
-          <div>
-            <h1 className="font-serif text-sm sm:text-xl lg:text-2xl font-black tracking-wider text-[var(--text-heading)] uppercase">
-              The Valkyrie <span className="text-[var(--accent-gold)] font-extrabold">of Avalon</span>
+          <div className="flex-1 min-w-0">
+            <h1 className="font-serif text-xs sm:text-lg lg:text-2xl font-black tracking-wider text-[var(--text-heading)] uppercase leading-snug whitespace-normal">
+              The Valkyrie <span className="text-[var(--accent-gold)] font-extrabold inline-block">of Avalon</span>
             </h1>
-            <p className="text-[9px] sm:text-[10px] tracking-widest text-[var(--text-body)] font-bold uppercase hidden sm:block">Handcrafted Artisan Goods</p>
+            <p className="text-[9px] sm:text-[10px] tracking-widest text-[var(--text-body)] font-bold uppercase hidden md:block">Handcrafted Artisan Goods</p>
           </div>
         </div>
 
-        {/* Right Section: Instagram Link, Security Badge, Theme Toggle & Basket Button */}
-        <div className="flex items-center space-x-2 sm:space-x-4">
+        {/* Right Section: Takes Precedence (shrink-0 so icons are never squeezed) */}
+        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0 ml-1 sm:ml-2">
           
           {/* Instagram Social Link */}
           <a
             href="https://www.instagram.com/the_valkyrie_of_avalon/"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 sm:p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-pink-600 dark:text-pink-400 hover:scale-105 transition-all shadow-xs flex items-center justify-center cursor-pointer"
+            className="p-2 sm:p-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-pink-600 dark:text-pink-400 hover:scale-105 transition-all shadow-xs flex items-center justify-center cursor-pointer shrink-0"
             title="Follow on Instagram (@the_valkyrie_of_avalon)"
             aria-label="Instagram Profile"
           >
@@ -66,7 +66,7 @@ export default function Header() {
           </a>
 
           {/* Security Badge */}
-          <div className="hidden lg:flex items-center space-x-2 text-xs font-bold text-[var(--text-body)] bg-[var(--bg-card)] border border-[var(--border-color)] px-3 py-1.5 rounded-full shadow-xs">
+          <div className="hidden lg:flex items-center space-x-2 text-xs font-bold text-[var(--text-body)] bg-[var(--bg-card)] border border-[var(--border-color)] px-3 py-1.5 rounded-full shadow-xs shrink-0">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
             <span>Stripe Encrypted</span>
           </div>
@@ -75,7 +75,7 @@ export default function Header() {
           {mounted && (
             <button
               onClick={toggleTheme}
-              className="p-2 sm:p-2.5 rounded-xl bg-[var(--toggle-bg)] border border-[var(--toggle-border)] text-[var(--toggle-text)] hover:opacity-90 transition-all shadow-xs cursor-pointer flex items-center justify-center"
+              className="p-2 sm:p-2.5 rounded-xl bg-[var(--toggle-bg)] border border-[var(--toggle-border)] text-[var(--toggle-text)] hover:opacity-90 transition-all shadow-xs cursor-pointer flex items-center justify-center shrink-0"
               title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
               aria-label="Toggle Theme"
             >
@@ -90,7 +90,7 @@ export default function Header() {
           {/* High Contrast Basket Button */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="relative group flex items-center space-x-1.5 sm:space-x-2 bg-[var(--accent-gold)] hover:opacity-90 text-white font-black px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all duration-200 shadow-md cursor-pointer active:scale-95"
+            className="relative group flex items-center space-x-1.5 sm:space-x-2 bg-[var(--accent-gold)] hover:opacity-90 text-white font-black px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all duration-200 shadow-md cursor-pointer active:scale-95 shrink-0"
             aria-label="View Shopping Basket"
           >
             <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform text-white shrink-0" />

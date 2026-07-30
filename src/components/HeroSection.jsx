@@ -10,9 +10,9 @@ export default function HeroSection() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center">
         
-        {/* Centered Emblem Logo */}
-        <div className="mx-auto mb-4 sm:mb-6 flex items-center justify-center">
-          <div className="w-24 h-24 sm:w-36 sm:h-36 rounded-full p-1 bg-gradient-to-tr from-amber-700 via-amber-500 to-amber-300 shadow-xl hover:scale-105 transition-transform duration-500">
+        {/* Emblem Logo - Hidden on mobile, shown on tablet/desktop */}
+        <div className="mx-auto mb-4 sm:mb-6 hidden sm:flex items-center justify-center">
+          <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full p-1 bg-gradient-to-tr from-amber-700 via-amber-500 to-amber-300 shadow-xl hover:scale-105 transition-transform duration-500">
             <img
               src="/images/logo.png"
               alt="The Valkyrie of Avalon Emblem"
