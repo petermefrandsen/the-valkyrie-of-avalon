@@ -2,12 +2,17 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { MOCK_PRODUCTS } from '@/lib/mockData';
 
-export async function GET() {
+export async function GET(request) {
   try {
     // If Stripe secret key is configured, fetch live products & prices from Stripe
     if (stripe && process.env.STRIPE_SECRET_KEY) {
+      // allow a debug mode via ?debug=true to surface pagination details
+      const url = new URL(request.url);
+      const debugMode = url.searchParams.get('debug') === '1' || url.searchParams.get('debug') === 'true';
+
       // Fetch all active Stripe products with pagination (limit=100 per page)
       const allProducts = [];
+      const pageSizes = [];
       let hasMore = true;
       let startingAfter = undefined;
 
@@ -20,6 +25,7 @@ export async function GET() {
         });
 
         allProducts.push(...page.data);
+        pageSizes.push(page.data ? page.data.length : 0);
         hasMore = page.has_more;
         if (page.data && page.data.length > 0) {
           startingAfter = page.data[page.data.length - 1].id;
@@ -69,6 +75,19 @@ export async function GET() {
           dimensions: dimensions,
         };
       });
+
+      if (debugMode) {
+        return NextResponse.json({
+          products,
+          source: 'stripe',
+          debug: {
+            fetchedCount: allProducts.length,
+            pageCount: pageSizes.length,
+            pageSizes,
+            stripeKeyPresent: !!process.env.STRIPE_SECRET_KEY,
+          },
+        });
+      }
 
       return NextResponse.json({ products, source: 'stripe' });
     }
