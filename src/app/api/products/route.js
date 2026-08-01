@@ -6,12 +6,29 @@ export async function GET() {
   try {
     // If Stripe secret key is configured, fetch live products & prices from Stripe
     if (stripe && process.env.STRIPE_SECRET_KEY) {
-      const productsResponse = await stripe.products.list({
-        active: true,
-        expand: ['data.default_price'],
-      });
+      // Fetch all active Stripe products with pagination (limit=100 per page)
+      const allProducts = [];
+      let hasMore = true;
+      let startingAfter = undefined;
 
-      const products = productsResponse.data.map((prod) => {
+      while (hasMore) {
+        const page = await stripe.products.list({
+          active: true,
+          expand: ['data.default_price'],
+          limit: 100,
+          ...(startingAfter ? { starting_after: startingAfter } : {}),
+        });
+
+        allProducts.push(...page.data);
+        hasMore = page.has_more;
+        if (page.data && page.data.length > 0) {
+          startingAfter = page.data[page.data.length - 1].id;
+        } else {
+          startingAfter = undefined;
+        }
+      }
+
+      const products = allProducts.map((prod) => {
         const defaultPrice = prod.default_price;
         const priceInCents = defaultPrice ? defaultPrice.unit_amount : 0;
         const currency = defaultPrice ? defaultPrice.currency : 'dkk';
