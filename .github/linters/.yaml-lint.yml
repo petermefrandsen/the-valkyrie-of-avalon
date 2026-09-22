@@ -1,0 +1,15 @@
+---
+extends: default
+
+ignore:
+  - '**/*.lock.yml'
+  - 'apm.lock.yaml'
+  - 'ghwm.lock'
+
+rules:
+  line-length:
+    max: 120
+  comments:
+    min-spaces-from-content: 1
+  truthy:
+    ignore: .github/workflows/
