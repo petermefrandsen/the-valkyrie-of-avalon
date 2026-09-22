@@ -1,0 +1,12 @@
+---
+# Agent Package Manager manifest
+# https://microsoft.github.io/apm/
+# Run: apm install
+name: the-valkyrie-of-avalon
+version: 1.0.0
+
+targets:
+  - agent-skills
+
+dependencies:
+  apm: []

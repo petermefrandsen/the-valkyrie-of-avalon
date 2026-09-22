@@ -1,0 +1,72 @@
+{
+  "lockfileVersion": 1,
+  "packages": [
+    {
+      "name": "ghwm-auto-assign-pr",
+      "source": "@ghwfxlab/ghwm-auto-assign-pr",
+      "files": [
+        {
+          "target": ".github/workflows/auto-assign-pr.yaml",
+          "source_hash": "sha256:df611208e35122e380e6636b72c2cdb5374859770c3849805d07f48fa1b58d45"
+        },
+        {
+          "target": ".github/auto_assign.yaml",
+          "source_hash": "sha256:5f7a38dc30a86cb19f820982f032a51d8b1b03579db2aca7ec315b55f1cf0656",
+          "overwrite": false
+        }
+      ],
+      "version": "1.0.1"
+    },
+    {
+      "name": "ghwm-super-linter",
+      "source": "@ghwfxlab/ghwm-super-linter",
+      "files": [
+        {
+          "target": ".github/workflows/super-linter.yaml",
+          "source_hash": "sha256:793b99ae4f87ed55432f0413574e85025dcc80a8ccef885c52dec0ace046f519"
+        },
+        {
+          "target": ".github/super-linter.env",
+          "source_hash": "sha256:0d232ec3c84035348d2cf9c288b84fc1cd26aec0f514a847b69b2fac59c909fc",
+          "overwrite": false
+        },
+        {
+          "target": ".github/super-linter-fix.env",
+          "source_hash": "sha256:25922314ef5b215b1242215be32f2c049d233d1e289c1e64ac56a4349047222a",
+          "overwrite": false
+        },
+        {
+          "target": ".github/linters/.yaml-lint.yml",
+          "source_hash": "sha256:5222b15daca89b208139ca27999a2b4aeb89f22318dfd720783790bd2b0f4be0",
+          "overwrite": false
+        },
+        {
+          "target": ".github/linters/.markdown-lint.yml",
+          "source_hash": "sha256:ac8cf00ccc6fba862e464c81877e201fdf5b72fe017fb30e791da0dddb5b101c",
+          "overwrite": false
+        },
+        {
+          "target": ".github/linters/actionlint.yml",
+          "source_hash": "sha256:229dd749979783fae6143c8424ca010d26d8919256b369596b852b048b65370b",
+          "overwrite": false
+        },
+        {
+          "target": ".github/linters/.gitleaks.toml",
+          "source_hash": "sha256:b23e03b39cb462131c4dd18b5092a0c74acb42db9d285eac526d245441316854",
+          "overwrite": false
+        },
+        {
+          "target": ".github/linters/.textlintrc",
+          "source_hash": "sha256:154931af0342dca3c0d71992b75a276b9b55c6265727c7d83649ae0a11149d63",
+          "overwrite": false
+        },
+        {
+          "target": ".github/linters/.textlintignore",
+          "source_hash": "sha256:67c3d375bc31c108974cf8524a78f98aadcd894eb858e337d1cacbd062468de2",
+          "overwrite": false
+        }
+      ],
+      "version": "1.0.1"
+    }
+  ]
+}

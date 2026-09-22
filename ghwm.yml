@@ -1,0 +1,14 @@
+---
+# GitHub Workflow Manager manifest
+# https://github.com/ghwfxlab/ghwm
+# Run: ghwm install
+source: ghwfxlab/ghwm-registry
+
+workflows:
+  - name: ghwm-auto-assign-pr
+    version: 1.0.1
+    update-config-files: true
+
+  - name: ghwm-super-linter
+    version: 1.0.1
+    update-config-files: true

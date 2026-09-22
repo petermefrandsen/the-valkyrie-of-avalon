@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# The Valkyrie of Avalon
 
-## Getting Started
+A modern e-commerce storefront for **The Valkyrie of Avalon** built with [Next.js](https://nextjs.org), [React](https://react.dev), [Tailwind CSS](https://tailwindcss.com), and [Stripe](https://stripe.com).
 
-First, run the development server:
+---
+
+## 📋 Table of Contents
+
+1. [Getting Started (Local Development)](#-getting-started-local-development)
+2. [Makefile Commands](#-makefile-commands)
+3. [Quality & Automation](#-quality--automation)
+4. [CI & Dependency Management](#-ci--dependency-management)
+
+---
+
+## 💻 Getting Started (Local Development)
+
+### Prerequisites
+
+- Node.js `v20.x` or `v22.x`
+- `npm`
+- Git
+- `uv` (recommended for pre-commit runner)
+- Docker (optional, for local Super-Linter)
+
+### Running Locally
+
+Install dependencies and start the development server using `make`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+make install
+make dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Or using `npm` directly:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the storefront.
 
-## Learn More
+### Production Build
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+make build
+make start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠 Makefile Commands
 
-## Deploy on Vercel
+The repository includes a standard `Makefile` for common development tasks:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Target | Description |
+| --- | --- |
+| `make check-env` | Verifies Node.js and npm availability |
+| `make install` | Installs dependencies via npm |
+| `make dev` | Starts the Next.js development server |
+| `make build` | Builds production assets into `.next/` |
+| `make start` | Starts the production server |
+| `make preview` | Alias for `make start` |
+| `make clean` | Removes build outputs and cache artifacts |
+| `make lang` | Runs textlint on project documentation |
+| `make lang-fix` | Runs textlint with autofix |
+| `make setup-precommit` | Installs Git pre-commit hooks via uv |
+| `make precommit` | Runs pre-commit checks across all files |
+| `make super-linter` | Runs GitHub Super-Linter locally in Docker |
+| `make super-linter-fix` | Runs GitHub Super-Linter with autofix in Docker |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🔍 Quality & Automation
+
+### Pre-commit Hooks
+
+Pre-commit hooks ensure all committed files pass linting and build checks before pushing:
+
+```bash
+# One-time setup
+make setup-precommit
+
+# Run manually
+make precommit
+```
+
+### Super-Linter
+
+GitHub Super-Linter runs on pull requests and pushes via GitHub Actions. You can run the exact same checks locally:
+
+```bash
+make super-linter-fix
+```
+
+The Makefile automatically resolves Git worktree paths so that Docker mounts function seamlessly in bare worktrees.
+
+---
+
+## 🤖 CI & Dependency Management
+
+- **Dependabot**: Configured in `.github/dependabot.yml` for weekly dependency updates with cooldown buffers.
+- **GHWM (GitHub Workflow Manager)**: Workflow definitions and linters are managed via `ghwm.yml`. Run `ghwm audit` to check security scores.
+- **APM (Agent Package Manager)**: Configured in `apm.yml` for AI agent skills and context packaging.

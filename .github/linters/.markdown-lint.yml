@@ -1,0 +1,8 @@
+---
+# markdownlint configuration for Super-Linter
+# https://github.com/DavidAnson/markdownlint
+default: true
+line-length: false   # Don't enforce line length — common in auto-generated content
+first-line-heading: false # Allow imports/metadata like @AGENTS.md in CLAUDE.md
+no-duplicate-heading:
+  siblings_only: true
