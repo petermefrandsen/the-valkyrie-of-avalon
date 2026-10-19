@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import Header from '@/components/Header';
@@ -11,11 +11,12 @@ import Link from 'next/link';
 function SuccessContent() {
   const searchParams = useSearchParams();
   const { clearCart } = useCart();
-  const orderId = searchParams.get('order_id') || searchParams.get('session_id') || `VALK-${Math.floor(100000 + Math.random() * 900000)}`;
+  const [fallbackOrderId] = useState(() => `VALK-${Math.floor(100000 + Math.random() * 900000)}`);
+  const orderId = searchParams.get('order_id') || searchParams.get('session_id') || fallbackOrderId;
 
   useEffect(() => {
     clearCart();
-  }, []);
+  }, [clearCart]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 text-center">

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useCallback, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
@@ -12,16 +12,19 @@ export function CartProvider({ children }) {
 
   // Hydrate cart from localStorage on client load
   useEffect(() => {
-    try {
-      const savedCart = localStorage.getItem('valkyrie_crafts_cart');
-      if (savedCart) {
-        setCart(JSON.parse(savedCart));
+    // Deferred so state is set from a callback rather than synchronously in the effect body
+    queueMicrotask(() => {
+      try {
+        const savedCart = localStorage.getItem('valkyrie_crafts_cart');
+        if (savedCart) {
+          setCart(JSON.parse(savedCart));
+        }
+      } catch (e) {
+        console.error('Failed to load cart from localStorage:', e);
+      } finally {
+        setIsHydrated(true);
       }
-    } catch (e) {
-      console.error('Failed to load cart from localStorage:', e);
-    } finally {
-      setIsHydrated(true);
-    }
+    });
   }, []);
 
   // Save cart to localStorage whenever cart changes
@@ -100,14 +103,14 @@ export function CartProvider({ children }) {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
     try {
       localStorage.removeItem('valkyrie_crafts_cart');
     } catch (e) {
       console.error(e);
     }
-  };
+  }, []);
 
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 

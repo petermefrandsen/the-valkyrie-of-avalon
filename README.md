@@ -41,6 +41,16 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the storefront.
 
+### Environment Variables
+
+Create a `.env.local` file (gitignored). Without Stripe keys the shop runs in demo mode with mock products.
+
+| Variable | Purpose |
+| --- | --- |
+| `STRIPE_SECRET_KEY` | Stripe API key (`sk_test_...` / `sk_live_...`) |
+| `STRIPE_WEBHOOK_SECRET` | Signing secret for `/api/webhook` |
+| `NEXT_PUBLIC_SITE_URL` | Public site URL used for checkout redirects. Required in production |
+
 ### Production Build
 
 ```bash

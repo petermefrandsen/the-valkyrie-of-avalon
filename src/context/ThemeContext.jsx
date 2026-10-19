@@ -9,18 +9,17 @@ export function ThemeProvider({ children }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    try {
-      const savedTheme = localStorage.getItem('valkyrie_theme');
-      if (savedTheme === 'dark' || savedTheme === 'light') {
-        setTheme(savedTheme);
-      } else {
+    // Deferred so state is set from a callback rather than synchronously in the effect body
+    queueMicrotask(() => {
+      try {
+        const savedTheme = localStorage.getItem('valkyrie_theme');
+        setTheme(savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : 'light');
+      } catch {
         setTheme('light');
+      } finally {
+        setMounted(true);
       }
-    } catch (e) {
-      setTheme('light');
-    } finally {
-      setMounted(true);
-    }
+    });
   }, []);
 
   useEffect(() => {
