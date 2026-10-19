@@ -1,55 +1,110 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
+import { loadCatalog } from '@/lib/catalog';
+
+const MAX_LINE_ITEMS = 20;
+const MAX_QUANTITY_PER_ITEM = 10;
+
+const SHIPPING_RATES = {
+  usd: { standard: 800, express: 1800 },
+  dkk: { standard: 4900, express: 12000 },
+  eur: { standard: 700, express: 1600 },
+};
+
+function resolveSiteUrl(request) {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
+  }
+  // Request headers are client-controlled, so only trust them outside production.
+  if (process.env.NODE_ENV !== 'production') {
+    return request.headers.get('origin') || 'http://localhost:3000';
+  }
+  return null;
+}
 
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const { items } = body;
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
 
-    if (!items || items.length === 0) {
+    const requested = body?.items;
+    if (!Array.isArray(requested) || requested.length === 0) {
       return NextResponse.json({ error: 'Basket is empty' }, { status: 400 });
     }
-
-    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-    // Determine currency from the first cart item (e.g. 'dkk', 'usd', 'eur')
-    const cartCurrency = (items[0]?.currency || 'usd').toLowerCase();
-
-    // Calculate shipping amounts matching the line items currency
-    let standardShippingAmount = 800; // $8.00 USD
-    let expressShippingAmount = 1800; // $18.00 USD
-
-    if (cartCurrency === 'dkk') {
-      standardShippingAmount = 4900; // 49.00 DKK
-      expressShippingAmount = 12000; // 120.00 DKK
-    } else if (cartCurrency === 'eur') {
-      standardShippingAmount = 700; // 7.00 EUR
-      expressShippingAmount = 1600; // 16.00 EUR
+    if (requested.length > MAX_LINE_ITEMS) {
+      return NextResponse.json({ error: 'Too many items in basket' }, { status: 400 });
     }
+
+    const siteUrl = resolveSiteUrl(request);
+    if (!siteUrl) {
+      console.error('[CHECKOUT CONFIG ERROR] NEXT_PUBLIC_SITE_URL is not configured');
+      return NextResponse.json({ error: 'Checkout is not configured' }, { status: 500 });
+    }
+
+    // Only product id and quantity are taken from the client; price, currency
+    // and stock always come from the server-side catalog.
+    const { products } = await loadCatalog();
+    const catalog = new Map(products.map((p) => [p.id, p]));
+    const quantities = new Map();
+
+    for (const entry of requested) {
+      const quantity = entry?.quantity;
+      const product = typeof entry?.id === 'string' ? catalog.get(entry.id) : undefined;
+
+      if (!product) {
+        return NextResponse.json({ error: 'Unknown product in basket' }, { status: 400 });
+      }
+      if (!Number.isInteger(quantity) || quantity < 1) {
+        return NextResponse.json({ error: 'Invalid quantity' }, { status: 400 });
+      }
+      quantities.set(product.id, (quantities.get(product.id) || 0) + quantity);
+    }
+
+    const cartItems = [];
+    for (const [id, quantity] of quantities) {
+      const product = catalog.get(id);
+      if (quantity > MAX_QUANTITY_PER_ITEM || quantity > product.stock) {
+        return NextResponse.json(
+          { error: `Requested quantity not available for "${product.name}"` },
+          { status: 400 },
+        );
+      }
+      if (!Number.isInteger(product.price) || product.price <= 0) {
+        return NextResponse.json({ error: `"${product.name}" is not available for purchase` }, { status: 400 });
+      }
+      cartItems.push({ product, quantity });
+    }
+
+    const cartCurrency = cartItems[0].product.currency.toLowerCase();
+    if (cartItems.some(({ product }) => product.currency.toLowerCase() !== cartCurrency)) {
+      return NextResponse.json({ error: 'Basket items must share one currency' }, { status: 400 });
+    }
+
+    const rates = SHIPPING_RATES[cartCurrency] || SHIPPING_RATES.usd;
 
     // If Stripe Secret Key is available, create real Stripe Checkout Session
     if (stripe && process.env.STRIPE_SECRET_KEY) {
-      const lineItems = items.map((item) => {
-        // If item has a valid Stripe Price ID (starts with 'price_'), use it directly
-        if (item.priceId && item.priceId.startsWith('price_') && !item.priceId.includes('mock')) {
-          return {
-            price: item.priceId,
-            quantity: item.quantity,
-          };
+      const lineItems = cartItems.map(({ product, quantity }) => {
+        // Real Stripe Price IDs come from the server-side catalog, never the client
+        if (product.priceId && product.priceId.startsWith('price_') && !product.priceId.includes('mock')) {
+          return { price: product.priceId, quantity };
         }
 
-        // Otherwise construct inline price data for dynamic/test items
         return {
           price_data: {
             currency: cartCurrency,
             product_data: {
-              name: item.name,
-              description: item.description || `Handcrafted craft item`,
-              images: item.images && item.images.length > 0 ? [item.images[0]] : [],
+              name: product.name,
+              description: product.description || `Handcrafted craft item`,
+              images: product.images && product.images.length > 0 ? [product.images[0]] : [],
             },
-            unit_amount: item.price,
+            unit_amount: product.price,
           },
-          quantity: item.quantity,
+          quantity,
         };
       });
 
@@ -67,7 +122,7 @@ export async function POST(request) {
             shipping_rate_data: {
               type: 'fixed_amount',
               fixed_amount: {
-                amount: standardShippingAmount,
+                amount: rates.standard,
                 currency: cartCurrency,
               },
               display_name: 'Standard Artisan Shipping (Tracked Parcel)',
@@ -81,7 +136,7 @@ export async function POST(request) {
             shipping_rate_data: {
               type: 'fixed_amount',
               fixed_amount: {
-                amount: expressShippingAmount,
+                amount: rates.express,
                 currency: cartCurrency,
               },
               display_name: 'Express Priority Courier',
@@ -92,8 +147,8 @@ export async function POST(request) {
             },
           },
         ],
-        success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/cancel`,
+        success_url: `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${siteUrl}/cancel`,
       });
 
       return NextResponse.json({ url: session.url });
@@ -102,13 +157,10 @@ export async function POST(request) {
     // Demo Mode fallback: Simulate successful redirect
     console.log('Stripe secret key not set. Simulating Checkout redirect...');
     return NextResponse.json({
-      url: `${origin}/success?demo=true&order_id=VALK-${Math.floor(100000 + Math.random() * 900000)}`,
+      url: `${siteUrl}/success?demo=true&order_id=VALK-${Math.floor(100000 + Math.random() * 900000)}`,
     });
   } catch (error) {
     console.error('Error creating Stripe checkout session:', error);
-    return NextResponse.json(
-      { error: error.message || 'Failed to create checkout session' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 });
   }
 }

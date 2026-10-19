@@ -24,7 +24,9 @@ export default function CartDrawer() {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: cart }),
+        body: JSON.stringify({
+          items: cart.map(({ id, quantity }) => ({ id, quantity })),
+        }),
       });
 
       const data = await response.json();
