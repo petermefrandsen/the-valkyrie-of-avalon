@@ -12,6 +12,12 @@ updates:
       semver-minor-days: 7
       semver-patch-days: 3   # Security patches still land quickly
     open-pull-requests-limit: 10
+    groups:
+      # react-dom peer-depends on the exact react version, so they must bump together
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
     labels:
       - "dependencies"
       - "npm"
