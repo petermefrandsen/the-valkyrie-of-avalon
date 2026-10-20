@@ -1,0 +1,6 @@
+---
+rules:
+  github-app:
+    ignore:
+      # create-github-app-token cannot be narrowed to the Variables permission; see the super-linter-lean README.
+      - super-linter-lean.yaml
