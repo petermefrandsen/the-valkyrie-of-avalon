@@ -6,7 +6,7 @@ source: ghwfxlab/ghwm-registry
 workflows:
   - name: auto-assign-pr
     version: 1.0.2
-    update-config-files: true
+    update-config-files: false
   - name: super-linter
     version: 2.0.1
   - name: super-linter-lean
