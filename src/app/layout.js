@@ -14,8 +14,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://www.thevalkyrieofavalon.com"),
   title: "The Valkyrie of Avalon | Handcrafted Artisan Goods & Small-Batch Crafts",
   description: "Independent artisan workshop producing hand-bound leather journals, forged jewelry, carved wood items, and small-batch pottery.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    url: "https://www.thevalkyrieofavalon.com",
+    title: "The Valkyrie of Avalon",
+    description: "Independent artisan workshop producing hand-bound leather journals, forged jewelry, carved wood items, and small-batch pottery.",
+    siteName: "The Valkyrie of Avalon",
+    type: "website",
+  },
   icons: {
     icon: "/images/logo.png",
   },
