@@ -8,8 +8,8 @@ workflows:
     version: 1.0.2
     update-config-files: false
   - name: super-linter
-    version: 2.0.2
+    version: 2.0.3
   - name: super-linter-lean
-    version: 1.0.2
+    version: 1.0.3
   - name: ghwm-update
     version: 1.0.2

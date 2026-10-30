@@ -1,6 +1,6 @@
-# Managed by ghwm (super-linter-lean@1.0.2)
+# Managed by ghwm (super-linter-lean@1.0.3)
 # Source: @ghwfxlab/super-linter-lean:super-linter-lean.yaml
-# Hash: sha256:aeb1300e64a3bfbdc73508e3cdae2415c477d82ee88e22815dcc49a306b094d4
+# Hash: sha256:22f25dbadeb4999ef39e1b32f6568b303f71a819a91781e433184eca77980211
 # Re-run `ghwm install` to refresh this file.
 
 # ---
@@ -97,7 +97,7 @@ jobs:
 
       - name: Build the image and smoke-test it
         id: lean
-        uses: ghwfxlab/superlint-lean@e4a037adfc639c4fcc3e86192e937e769d8e5269 # v0.0.15
+        uses: ghwfxlab/lintsmith@062d33af75b282de82153dfde2a88dd6613d324d # v0.0.16
         with:
           upstream-tag: ${{ steps.version.outputs.version }}
           env-files: ${{ env.SUPER_LINTER_CONFIG_PATH }}
