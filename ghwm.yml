@@ -10,6 +10,6 @@ workflows:
   - name: super-linter
     version: 2.0.3
   - name: super-linter-lean
-    version: 1.0.3
+    version: 1.0.4
   - name: ghwm-update
     version: 1.0.2
