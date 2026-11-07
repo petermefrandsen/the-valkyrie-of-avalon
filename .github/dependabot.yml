@@ -1,7 +1,10 @@
----
 version: 2
+
+# GitHub Actions are intentionally not listed: every workflow in this repository is managed by
+# ghwm (see ghwm.lock) and gets overwritten on `ghwm update`, so action bumps arrive through the
+# ghwm-update PR. APM skills get their own update workflow (apm-update).
 updates:
-  # Keep npm dependencies up to date
+  # Keep npm dependencies up to date, all in one pull request
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -13,27 +16,12 @@ updates:
       semver-patch-days: 3   # Security patches still land quickly
     open-pull-requests-limit: 10
     groups:
-      # react-dom peer-depends on the exact react version, so they must bump together
-      react:
+      # Single group for everything; react and react-dom (exact peer dependency) bump together
+      npm-all:
         patterns:
-          - "react"
-          - "react-dom"
+          - "*"
     labels:
       - "dependencies"
       - "npm"
-    assignees:
-      - "petermefrandsen"
-
-  # Keep GitHub Actions up to date
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    cooldown:
-      default-days: 7        # Wait 7 days before opening PRs for GitHub Actions
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "github-actions"
     assignees:
       - "petermefrandsen"
