@@ -1,39 +1,36 @@
----
 version: 2
+
+# One pull request per week for all dependency updates, across npm and GitHub Actions.
+# ghwm packages (ghwm-update) and APM skills (apm-update) have their own update workflows.
+multi-ecosystem-groups:
+  dependencies:
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    assignees:
+      - "petermefrandsen"
+
 updates:
   # Keep npm dependencies up to date
   - package-ecosystem: "npm"
     directory: "/"
-    schedule:
-      interval: "weekly"
+    patterns:
+      - "*"
+    multi-ecosystem-group: "dependencies"
     cooldown:
       default-days: 7        # Wait 7 days before opening PRs — mitigates supply chain attacks
       semver-major-days: 30  # Extra caution for breaking changes
       semver-minor-days: 7
       semver-patch-days: 3   # Security patches still land quickly
     open-pull-requests-limit: 10
-    groups:
-      # react-dom peer-depends on the exact react version, so they must bump together
-      react:
-        patterns:
-          - "react"
-          - "react-dom"
-    labels:
-      - "dependencies"
-      - "npm"
-    assignees:
-      - "petermefrandsen"
 
   # Keep GitHub Actions up to date
   - package-ecosystem: "github-actions"
     directory: "/"
-    schedule:
-      interval: "weekly"
+    patterns:
+      - "*"
+    multi-ecosystem-group: "dependencies"
     cooldown:
       default-days: 7        # Wait 7 days before opening PRs for GitHub Actions
     open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "github-actions"
-    assignees:
-      - "petermefrandsen"
