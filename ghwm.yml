@@ -13,3 +13,6 @@ workflows:
     version: 1.0.5
   - name: ghwm-update
     version: 1.0.3
+  - name: apm-update
+    version: 1.0.0
+    source: petermefrandsen/ghwm-marketplace

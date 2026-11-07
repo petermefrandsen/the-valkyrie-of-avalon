@@ -1,0 +1,90 @@
+# Managed by ghwm (apm-update@1.0.0)
+# Source: @petermefrandsen/apm-update:apm-update.yaml
+# Hash: sha256:0d72655ba835bdc1269d2410f05a0f8ad2e722299e53bfd795b6189893168a12
+# Re-run `ghwm install` to refresh this file.
+
+# ---
+# title: Update APM skills
+# description: Refresh APM dependencies (agent skills) on a schedule and open a pull request
+# tags:
+#   - automation
+#   - apm
+#   - pr
+# icon: deployed_code
+# owner: petermefrandsen
+# ---
+---
+name: Update APM skills
+
+on: # yamllint disable-line rule:truthy
+  schedule:
+    - cron: "0 6 * * 1" # Mondays at 6 am
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: apm-update
+  cancel-in-progress: false
+
+env:
+  APM_VERSION: "0.35.0" # Pinned APM CLI version installed by microsoft/apm-action
+
+jobs:
+  update-apm:
+    name: Update APM skills
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Generate GH App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.GH_APP_CLIENT_ID || secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Get GitHub App User ID
+        id: get-user-id
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: echo "user-id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+
+      - name: Update APM dependencies
+        uses: microsoft/apm-action@d723bb64ed70c135bbaf87d126b721dd2dae0439 # v1.10.0
+        with:
+          update: "true"
+          apm-version: ${{ env.APM_VERSION }}
+          github-token: ${{ secrets.APM_PAT || github.token }}
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        # yamllint disable rule:line-length
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          committer: >-
+            ${{ steps.app-token.outputs.app-slug }}[bot]
+            <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
+          author: >-
+            ${{ steps.app-token.outputs.app-slug }}[bot]
+            <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
+          commit-message: "chore(ci): update APM skills"
+          title: "chore(ci): update APM skills"
+          body: |
+            Refreshes the APM dependencies declared in `apm.yml` to their latest matching refs
+            (`apm update --yes`), rewriting `apm.lock.yaml` and the deployed skill files.
+
+            Review the changed skill files before merging.
+          branch: chore/apm-update
+          labels: flag:dependencies
+          delete-branch: true
+          # yamllint enable rule:line-length

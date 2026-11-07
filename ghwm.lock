@@ -2,6 +2,17 @@
   "lockfileVersion": 1,
   "packages": [
     {
+      "name": "apm-update",
+      "source": "@petermefrandsen/apm-update",
+      "files": [
+        {
+          "target": ".github/workflows/apm-update.yaml",
+          "source_hash": "sha256:0d72655ba835bdc1269d2410f05a0f8ad2e722299e53bfd795b6189893168a12"
+        }
+      ],
+      "version": "1.0.0"
+    },
+    {
       "name": "auto-assign-pr",
       "source": "@ghwfxlab/auto-assign-pr",
       "files": [
