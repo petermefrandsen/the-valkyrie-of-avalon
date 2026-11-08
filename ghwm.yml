@@ -8,11 +8,11 @@ workflows:
     version: 1.0.2
     update-config-files: false
   - name: super-linter
-    version: 2.0.5
+    version: 2.0.6
   - name: super-linter-lean
     version: 1.0.5
   - name: ghwm-update
-    version: 1.0.3
+    version: 1.0.4
   - name: apm-update
     version: 1.0.0
     source: petermefrandsen/ghwm-marketplace
